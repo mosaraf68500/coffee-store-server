@@ -23,6 +23,28 @@ async function run() {
   try {
     
     await client.connect();
+
+
+
+    const CollectionCoffee=client.db("coffeeDB").collection("coffee");
+    app.post("/addcoffee",async(req,res)=>{
+        const newCoffee=req.body;
+        const result=await CollectionCoffee.insertOne(newCoffee);
+        res.send(result);
+    })
+
+    app.get("/addcoffee",async(req,res)=>{
+        const cursor=CollectionCoffee.find();
+        const result=await cursor.toArray();
+        res.send(result);
+    })
+
+
+
+
+
+
+
     
     await client.db("admin").command({ ping: 1 });
     console.log(
