@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const port = process.env.PORT || 3000;
 
@@ -21,37 +21,33 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    
     await client.connect();
 
+    const CollectionCoffee = client.db("coffeeDB").collection("coffee");
+    app.post("/addcoffee", async (req, res) => {
+      const newCoffee = req.body;
+      const result = await CollectionCoffee.insertOne(newCoffee);
+      res.send(result);
+    });
 
+    app.get("/addcoffee", async (req, res) => {
+      const cursor = CollectionCoffee.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
-    const CollectionCoffee=client.db("coffeeDB").collection("coffee");
-    app.post("/addcoffee",async(req,res)=>{
-        const newCoffee=req.body;
-        const result=await CollectionCoffee.insertOne(newCoffee);
-        res.send(result);
-    })
+    app.get("/addcoffee/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await CollectionCoffee.findOne(query);
+      res.send(result);
+    });
 
-    app.get("/addcoffee",async(req,res)=>{
-        const cursor=CollectionCoffee.find();
-        const result=await cursor.toArray();
-        res.send(result);
-    })
-
-
-
-
-
-
-
-    
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
   } finally {
-  
     // await client.close();
   }
 }
