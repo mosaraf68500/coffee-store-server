@@ -46,6 +46,13 @@ async function run() {
 
 
     // profile
+
+
+    app.get("/profiles",async(req,res)=>{
+      const result=await CollectionProfile.find().toArray();
+      res.send(result)
+    })
+
     app.post("/profiles",async(req,res)=>{
       const profile=req.body;
       const result= await CollectionProfile.insertOne(profile);
