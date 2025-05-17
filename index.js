@@ -60,6 +60,30 @@ async function run() {
     })
 
 
+    app.patch("/profiles",async(req,res)=>{
+      const {email,lastSignInTime}=req.body;
+      console.log(email,lastSignInTime)
+      const filter={email:email};
+      const userDocs={
+        $set:{
+          lastSignInTime:lastSignInTime
+
+        }
+      }
+      const result= await CollectionProfile.updateOne(filter,userDocs);
+      res.send(result);
+    })
+
+
+
+
+    app.delete("/profiles/:id",async(req,res)=>{
+      const  id=req.params.id;
+      const query={_id:new ObjectId(id)};
+      const result=await CollectionProfile.deleteOne(query);
+      res.send(result);
+    })
+
 
     app.put("/addcoffee/:id",async(req,res)=>{
         const id=req.params.id;
